@@ -6,3 +6,4 @@ This project was bootstrapped with [Doctors portal](https://github.com/facebook/
 
 - react router dom
 - Material ui react component
+- for calender use material lab
