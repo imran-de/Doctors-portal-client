@@ -10,6 +10,7 @@ const Calender = ({ date, setDate }) => {
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <StaticDatePicker
+                displayStaticWrapperAs="desktop"
                 openTo="day"
                 value={date}
                 shouldDisableDate={isWeekend}

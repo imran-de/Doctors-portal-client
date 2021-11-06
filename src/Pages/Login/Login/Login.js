@@ -6,7 +6,7 @@ import useAuth from '../../../hooks/useAuth';
 import login from '../../../images/login.png';
 
 const Login = () => {
-    const { user, isLoading, loginUser, msg } = useAuth();
+    const { user, isLoading, loginUser, signInWithGoogle, msg } = useAuth();
 
     const [loginData, setLoginData] = useState({})
     const location = useLocation();
@@ -26,10 +26,13 @@ const Login = () => {
 
         e.preventDefault();
     }
+    const handleGoogleSignIn = () => {
+        signInWithGoogle(location, history);
+    }
     return (
         <Container>
             <Grid container spacing={2}>
-                <Grid item sx={{ mt: 8 }} xs={12} md={6}>
+                <Grid item sx={{ mt: 8, textAlign: 'center' }} xs={12} md={6}>
                     <Typography variant="body1" gutterBottom>
                         Login
                     </Typography>
@@ -59,7 +62,14 @@ const Login = () => {
                         <Button sx={{ width: '75%', m: 1 }} variant='contained' type='submit'>Login</Button>
 
                         <NavLink style={{ textDecoration: 'none' }} to="/register"><Button variant="text">New user? Please Register!</Button></NavLink>
-                    </form>}
+                    </form>
+                    }
+                    <Box sx={{ textAlign: 'center' }}>--------------------------------</Box>
+
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Button onClick={handleGoogleSignIn} variant='contained'>Sign In With Google</Button>
+                    </Box>
+
                     {isLoading && <Box sx={{ display: 'flex' }}>
                         <CircularProgress />
                     </Box>}

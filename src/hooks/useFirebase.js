@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import initializeFirebase from "../Firebase/firebase.init";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "firebase/auth";
 
 //initialize firebase app
 initializeFirebase();
@@ -13,19 +13,22 @@ const useFirebase = () => {
     const auth = getAuth();
 
     //create user with pass/ register user
-    const registerUser = (registerData) => {
+    const registerUser = (registerData, history) => {
         setIsLoading(true)
         const { name, email, password } = registerData;
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
+                user.displayName = name;
                 //userName and photo url set
                 const photourl = 'https://casperkruger.co.za/wp-content/uploads/2014/08/Profile-Pic-Demo.png';
                 updateUser(name, photourl);
 
                 setUser(user)
                 setMsg('');
+                //redirect home page 
+                history.replace('/');
                 // ...
             })
             .catch((error) => {
@@ -67,6 +70,27 @@ const useFirebase = () => {
             }).finally(() => setIsLoading(false));
     }
 
+    // sign in with google
+    const signInWithGoogle = (location, history) => {
+        setIsLoading(true);
+        const googleProvider = new GoogleAuthProvider();
+        signInWithPopup(auth, googleProvider)
+            .then((result) => {
+                // The signed-in user info.
+                const user = result.user;
+                setUser(user);
+                //redirect previous page after successfully login
+                const destination = location?.state?.from || '/';
+                history.replace(destination);
+                // ...
+            }).catch((error) => {
+                // Handle Errors here.
+                const errorMessage = error.message;
+                setMsg(errorMessage);
+                // ...
+            }).finally(setIsLoading(false));
+    }
+
     //observe user state
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -97,6 +121,7 @@ const useFirebase = () => {
         user,
         registerUser,
         loginUser,
+        signInWithGoogle,
         logOut,
         msg,
 

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import { Button, TextField } from '@mui/material';
+import useAuth from '../../../hooks/useAuth';
 
 const style = {
     position: 'absolute',
@@ -19,11 +20,46 @@ const style = {
 };
 
 
-const BookingModal = ({ booking, date, openBooking, handleBookingClose }) => {
+const BookingModal = ({ booking, date, openBooking, handleBookingClose, setBookingSuccess }) => {
     const { name, time } = booking;
+    const { user } = useAuth();
+
+    const initialInfo = { patientName: user.displayName, email: user.email, phone: '' }
+
+    const [bookingInfo, setBookingInfo] = useState(initialInfo);
+
+    const handleOnBlur = e => {
+        const filed = e.target.name;
+        const value = e.target.value;
+        const newInfo = { ...bookingInfo };
+        newInfo[filed] = value;
+        setBookingInfo(newInfo);
+
+    }
 
     const handleBookSubmit = e => {
+
         e.preventDefault();
+        //collect data
+        const appointment = {
+            ...bookingInfo,
+            time,
+            serviceName: name,
+            date: date.toLocaleDateString(),
+        }
+        //send data sever
+        fetch('http://localhost:5000/appointments', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(appointment)
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result.insertedId) {
+                    setBookingSuccess(true)
+                    handleBookingClose();
+                }
+            })
     }
     return (
         <Modal
@@ -39,7 +75,7 @@ const BookingModal = ({ booking, date, openBooking, handleBookingClose }) => {
         >
             <Fade in={openBooking}>
                 <Box sx={style}>
-                    <form onSubmit={handleBookSubmit}>
+                    <form onSubmit={handleBookSubmit} type='post'>
                         <Typography id="transition-modal-title" variant="h6" component="h2">
                             {name}
                         </Typography>
@@ -53,20 +89,28 @@ const BookingModal = ({ booking, date, openBooking, handleBookingClose }) => {
                         <TextField
                             sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
-                            defaultValue="Your Name"
+                            name="patientName"
+                            onBlur={handleOnBlur}
+                            defaultValue={user?.displayName}
                             size="small"
                         />
                         <TextField
                             sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
-                            defaultValue="Your email"
+                            name='email'
+                            onBlur={handleOnBlur}
+                            defaultValue={user?.email}
                             size="small"
                         />
                         <TextField
                             sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
-                            defaultValue="Your phone Number"
+                            name='phone'
+                            onBlur={handleOnBlur}
+                            defaultValue=""
                             size="small"
+                            placeholder="patient phone number"
+                            required
                         />
                         <TextField
                             disabled
