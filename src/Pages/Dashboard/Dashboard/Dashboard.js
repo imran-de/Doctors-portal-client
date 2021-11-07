@@ -15,15 +15,25 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Grid } from '@mui/material';
-import Calender from '../../Shared/Calender/Calender';
-import Appointments from '../Appointments/Appointments';
-import { Link } from 'react-router-dom';
+import {
+    Switch,
+    Route,
+    Link,
+    useRouteMatch
+} from "react-router-dom";
+import DashboardHome from '../DashboardHome/DashboardHome';
+import MakeAdmin from '../MakeAdmin/MakeAdmin';
+import AddDoctor from '../AddDoctor/AddDoctor';
+import useAuth from '../../../hooks/useAuth';
+import AdminRoute from '../../Login/AdminRoute/AdminRoute';
 
 const drawerWidth = 200;
 
 function Dashboard(props) {
-    const [date, setDate] = React.useState(new Date());
+
+    let { path, url } = useRouteMatch();
+    const { isAdmin } = useAuth();
+
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -40,28 +50,23 @@ function Dashboard(props) {
                     <ListItemIcon>
                         <MailIcon />
                     </ListItemIcon>
-                    <ListItemText > <Link style={{ textDecoration: 'none', marginRight: '20px', color: '#0f0f0f' }} to="/dashboard">Dashboard</Link></ListItemText>
+                    <ListItemText > <Link style={{ textDecoration: 'none', marginRight: '20px', color: '#0f0f0f' }} to={`${url}`}>Dashboard</Link></ListItemText>
                 </ListItem>
-                <ListItem button>
-                    <ListItemIcon>
-                        <InboxIcon />
-                    </ListItemIcon>
-                    <ListItemText ><Link style={{ textDecoration: 'none', color: '#0f0f0f' }} to="/appointment">Appointment</Link></ListItemText>
-                </ListItem>
-            </List>
-
-
-            <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem button key={text}>
+                {isAdmin && <Box>
+                    <ListItem button>
                         <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                            <InboxIcon />
                         </ListItemIcon>
-                        <ListItemText primary={text} />
+                        <ListItemText ><Link style={{ textDecoration: 'none', color: '#0f0f0f' }} to={`${url}/makeAdmin`}>MakeAdmin</Link></ListItemText>
                     </ListItem>
-                ))}
+                    <ListItem button>
+                        <ListItemIcon>
+                            <InboxIcon />
+                        </ListItemIcon>
+                        <ListItemText ><Link style={{ textDecoration: 'none', color: '#0f0f0f' }} to={`${url}/addDoctor`}>AddDoctor</Link></ListItemText>
+                    </ListItem>
+                </Box>}
             </List>
-
         </div>
     );
 
@@ -131,18 +136,17 @@ function Dashboard(props) {
                 sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
             >
                 <Toolbar />
-                <Typography paragraph sx={{ m: 0 }}>
-                    <Grid container spacing={0}>
-                        <Grid item xs={12} md={6}>
-                            <Calender
-                                date={date} setDate={setDate}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Appointments date={date} setDate={setDate} />
-                        </Grid>
-                    </Grid>
-                </Typography>
+                <Switch>
+                    <Route exact path={path}>
+                        <DashboardHome />
+                    </Route>
+                    <AdminRoute path={`${path}/makeAdmin`}>
+                        <MakeAdmin />
+                    </AdminRoute>
+                    <AdminRoute path={`${path}/addDoctor`}>
+                        <AddDoctor />
+                    </AdminRoute>
+                </Switch>
             </Box>
         </Box>
     );

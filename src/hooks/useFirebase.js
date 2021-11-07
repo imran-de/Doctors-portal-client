@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import initializeFirebase from "../Firebase/firebase.init";
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile, getIdToken, signOut } from "firebase/auth";
 
 //initialize firebase app
 initializeFirebase();
 const useFirebase = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState({});
+    const [isAdmin, setIsAdmin] = useState(false);
     const [msg, setMsg] = useState('');
+    const [token, setToken] = useState('');
 
 
     const auth = getAuth();
@@ -27,6 +29,8 @@ const useFirebase = () => {
 
                 setUser(user)
                 setMsg('');
+                //save user data in mongodb
+                saveUser(email, name, 'POST');
                 //redirect home page 
                 history.replace('/');
                 // ...
@@ -79,6 +83,8 @@ const useFirebase = () => {
                 // The signed-in user info.
                 const user = result.user;
                 setUser(user);
+                //user data save mongoDB
+                saveUser(user.email, user.displayName, 'PUT');
                 //redirect previous page after successfully login
                 const destination = location?.state?.from || '/';
                 history.replace(destination);
@@ -96,7 +102,10 @@ const useFirebase = () => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(user)
-                // ...
+                getIdToken(user)
+                    .then(idToken => {
+                        setToken(idToken);
+                    })
             } else {
                 setUser({})
             }
@@ -104,6 +113,17 @@ const useFirebase = () => {
         });
         return () => unsubscribe;
     }, [auth])
+
+    // admin check
+    useEffect(() => {
+        fetch(`http://localhost:5000/users/${user.email}`, {
+            method: 'GET',
+            headers: { 'content-type': 'application/json' },
+        }).then(res => res.json())
+            .then(data => {
+                setIsAdmin(data.admin)
+            })
+    }, [user?.email])
 
     //signOut
     const logOut = () => {
@@ -116,9 +136,23 @@ const useFirebase = () => {
             // An error happened.
         }).finally(() => setIsLoading(false));
     }
+    //save user to the database
+    const saveUser = (email, displayName, method) => {
+        const user = { email, displayName }
+
+        fetch('http://localhost:5000/user', {
+            method: method,
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(user)
+        })
+            .then()
+    }
+
     return {
         isLoading,
         user,
+        isAdmin,
+        token,
         registerUser,
         loginUser,
         signInWithGoogle,
