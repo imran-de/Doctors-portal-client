@@ -48,7 +48,7 @@ const BookingModal = ({ booking, date, openBooking, handleBookingClose, setBooki
             date: date.toLocaleDateString(),
         }
         //send data sever
-        fetch('http://localhost:5000/appointments', {
+        fetch('https://doctors-portal-4405.herokuapp.com/appointments', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(appointment)

@@ -15,7 +15,7 @@ const MakeAdmin = () => {
     const handleAdminSubmit = e => {
         e.preventDefault();
         const user = { email };
-        fetch('http://localhost:5000/users/admin', {
+        fetch('https://doctors-portal-4405.herokuapp.com/users/admin', {
             method: 'PUT',
             headers: {
                 'authorization': `Bearer ${token}`,
@@ -25,7 +25,6 @@ const MakeAdmin = () => {
         })
             .then(res => res.json())
             .then(result => {
-                console.log(result);
                 if (result.modifiedCount) {
                     setSuccess(true)
                     setMsg(result?.message)

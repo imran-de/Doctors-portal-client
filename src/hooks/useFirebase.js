@@ -116,7 +116,7 @@ const useFirebase = () => {
 
     // admin check
     useEffect(() => {
-        fetch(`http://localhost:5000/users/${user.email}`, {
+        fetch(`https://doctors-portal-4405.herokuapp.com/users/${user.email}`, {
             method: 'GET',
             headers: { 'content-type': 'application/json' },
         }).then(res => res.json())
@@ -140,7 +140,7 @@ const useFirebase = () => {
     const saveUser = (email, displayName, method) => {
         const user = { email, displayName }
 
-        fetch('http://localhost:5000/user', {
+        fetch('https://doctors-portal-4405.herokuapp.com/user', {
             method: method,
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(user)
