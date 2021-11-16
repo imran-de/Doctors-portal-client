@@ -3,7 +3,7 @@ import { Button, Grid, Paper, Typography } from '@mui/material';
 import BookingModal from '../BookingModal/BookingModal';
 
 const Booking = ({ booking, date, setBookingSuccess }) => {
-    const { name, time, space } = booking;
+    const { name, time, space, fee } = booking;
     const [openBooking, setOpenBooking] = React.useState(false);
     const handleBookingOpen = () => setOpenBooking(true);
     const handleBookingClose = () => setOpenBooking(false);
@@ -19,6 +19,9 @@ const Booking = ({ booking, date, setBookingSuccess }) => {
                     </Typography>
                     <Typography variant="caption" display="block" gutterBottom>
                         {space} SPACES AVAILABLE
+                    </Typography>
+                    <Typography variant="caption" display="block" gutterBottom>
+                        Fee: $ {fee}
                     </Typography>
                     <Button onClick={handleBookingOpen} variant="contained">Book Appointment</Button>
                 </Paper>
