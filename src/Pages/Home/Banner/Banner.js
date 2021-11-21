@@ -8,7 +8,8 @@ import { Button, Container, Typography } from '@mui/material';
 
 const bannerBg = {
     background: `url(${bg})`,
-    height: '450px'
+    height: '450px',
+    width: '100%'
 }
 const verticalCenter = {
     display: 'flex',
@@ -18,7 +19,7 @@ const verticalCenter = {
 }
 const Banner = () => {
     return (
-        <Container style={bannerBg} sx={{ mt: 2 }}>
+        <Container className="banner-bg" style={bannerBg} sx={{ mt: 2 }}>
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6} sx={{ ...verticalCenter, textAlign: 'left' }}>
@@ -34,7 +35,7 @@ const Banner = () => {
                         </Box>
                     </Grid>
                     <Grid item xs={12} md={6} style={verticalCenter}>
-                        <img
+                        <img className='banner-img'
                             style={{ width: '400px' }}
                             src={chair} alt="" />
                     </Grid>

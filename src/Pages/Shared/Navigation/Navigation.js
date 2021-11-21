@@ -11,6 +11,9 @@ import useAuth from '../../../hooks/useAuth';
 
 const Navigation = () => {
     const { user, logOut } = useAuth();
+    const linkStyle = {
+        textDecoration: 'none', color: '#fff'
+    }
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -27,7 +30,26 @@ const Navigation = () => {
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Doctors Portal
                     </Typography>
-                    <Link style={{ textDecoration: 'none', color: '#fff' }} to="/appointment">Appointment</Link>
+                    <Box className='desktop-menu' sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                        <Typography sx={{ minWidth: 100 }}>
+                            <Link style={linkStyle} to="/">Home</Link>
+                        </Typography>
+                        <Typography sx={{ minWidth: 100 }}>
+                            <Link style={linkStyle} to="/about">About</Link>
+                        </Typography>
+                        <Typography sx={{ minWidth: 100 }}>
+                            <Link style={linkStyle} to="/appointment">Appointment</Link>
+                        </Typography>
+                        <Typography sx={{ minWidth: 100 }}>
+                            <Link style={linkStyle} to="/reviews">Reviews</Link>
+                        </Typography>
+                        <Typography sx={{ minWidth: 100 }}>
+                            <Link style={linkStyle} to="/blog">Blog</Link>
+                        </Typography>
+                        <Typography sx={{ minWidth: 100 }}>
+                            <Link style={linkStyle} to="/contact">Contact Us</Link>
+                        </Typography>
+                    </Box>
                     {
                         user?.email ?
                             <Box>
