@@ -7,6 +7,9 @@ import Information from '../Information/Information';
 import Services from '../Services/Services';
 import { Box } from '@mui/system';
 import Exceptional from '../Exceptional/Exceptional';
+import Testimonials from '../Testimonials/Testimonials';
+import Blogs from '../Blogs/Blogs';
+import Footer from '../../Shared/Footer/Footer';
 
 const Home = () => {
     return (
@@ -15,9 +18,12 @@ const Home = () => {
             <Banner />
             <Information />
             <Services />
-            <AppointmentBanner />
             <Exceptional />
+            <AppointmentBanner />
+            <Testimonials />
+            <Blogs />
             <Doctors />
+            <Footer />
         </Box>
     );
 };
